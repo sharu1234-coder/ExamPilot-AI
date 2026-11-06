@@ -1,0 +1,40 @@
+﻿from fastapi import Depends, HTTPException, status
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from sqlalchemy.orm import Session
+
+from app.config import Settings, get_settings
+from app.database import get_db
+from app.models import User
+from app.tokens import decode_access_token
+
+
+bearer_scheme = HTTPBearer(auto_error=False)
+
+
+def unauthorized() -> HTTPException:
+    return HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Authentication required or token invalid",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+
+
+def get_current_user(
+    credentials: HTTPAuthorizationCredentials | None = Depends(bearer_scheme),
+    db: Session = Depends(get_db),
+    settings: Settings = Depends(get_settings),
+) -> User:
+    if credentials is None:
+        raise unauthorized()
+
+    user_id = decode_access_token(credentials.credentials, settings)
+
+    if user_id is None:
+        raise unauthorized()
+
+    user = db.get(User, user_id)
+
+    if user is None or not user.is_active:
+        raise unauthorized()
+
+    return user

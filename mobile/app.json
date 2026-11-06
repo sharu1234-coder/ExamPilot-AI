@@ -1,0 +1,44 @@
+{
+  "expo": {
+    "name": "ExamPilot AI",
+    "slug": "exampilot-ai",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/brand/app-icon.png",
+    "scheme": "exampilot",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "icon": "./assets/brand/app-icon.png"
+    },
+    "android": {
+      "package": "com.exampilot.student",
+      "adaptiveIcon": {
+        "backgroundColor": "#6655E8",
+        "foregroundImage": "./assets/brand/foreground.png",
+        "backgroundImage": "./assets/brand/background.png",
+        "monochromeImage": "./assets/brand/monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "output": "server",
+      "favicon": "./assets/brand/app-icon.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#6655E8",
+          "image": "./assets/brand/foreground.png",
+          "imageWidth": 180
+        }
+      ],
+      "expo-sqlite"
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    }
+  }
+}

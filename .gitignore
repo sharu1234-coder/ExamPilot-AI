@@ -1,0 +1,54 @@
+.venv/
+__pycache__/
+.pytest_cache/
+*.pyc
+.env
+node_modules/
+dist/
+.expo/
+.expo-dist/
+.eas/
+coverage/
+.DS_Store
+*.log
+*.tsbuildinfo
+.idea/
+.vscode/
+
+
+# Local environments and secrets
+**/.env
+**/.env.*
+!**/.env.example
+**/*.keystore
+**/*.jks
+**/*.pem
+**/*.key
+**/google-services.json
+**/local.properties
+
+# Python
+**/.venv/
+**/venv/
+**/__pycache__/
+**/.pytest_cache/
+**/*.pyc
+
+# Node and Expo
+**/node_modules/
+**/.expo/
+
+# Android and generated builds
+**/.gradle/
+**/.cxx/
+**/build/
+.apk-cxx/
+**/*.apk
+**/*.aab
+**/artifacts/
+
+# Temporary and backup files
+**/*.zip
+**/*.bak
+**/*.backup.txt
+**/*.log

@@ -1,0 +1,7 @@
+gradle.beforeProject { p ->
+    if (p.path == ':app') {
+        p.pluginManager.withPlugin('com.android.application') {
+            p.extensions.getByName('android').externalNativeBuild.cmake.buildStagingDirectory = new File('C:/Users/deepi/EP/.apk-cxx')
+        }
+    }
+}

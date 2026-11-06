@@ -1,0 +1,148 @@
+﻿import { useState } from "react";
+import {
+  ActivityIndicator,
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+
+import {
+  GoogleOneTapSignIn,
+  isSuccessResponse,
+} from "react-native-nitro-google-signin";
+
+const webClientId = process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID;
+
+export default function GoogleLoginScreen() {
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState(
+    "Sign in securely with your Google account."
+  );
+  const [email, setEmail] = useState<string | null>(null);
+
+  async function handleGoogleLogin() {
+    if (loading) return;
+
+    setLoading(true);
+    setMessage("Opening Google Sign-In...");
+
+    try {
+      if (!webClientId) {
+        throw new Error("Google Web Client ID is not configured.");
+      }
+
+      await GoogleOneTapSignIn.configure({
+        webClientId,
+      });
+
+      await GoogleOneTapSignIn.checkPlayServices();
+
+      const result = await GoogleOneTapSignIn.presentExplicitSignIn();
+
+      if (!isSuccessResponse(result)) {
+        setMessage("Google Sign-In was cancelled or not completed.");
+        return;
+      }
+
+      if (!result.data.idToken) {
+        throw new Error("Google did not return an ID token.");
+      }
+
+      setEmail(result.data.user.email ?? "Google account");
+      setMessage(
+        "Google authentication succeeded. Backend integration is next."
+      );
+    } catch (error) {
+      setMessage(
+        error instanceof Error ? error.message : "Google Sign-In failed."
+      );
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <View style={styles.card}>
+        <Text style={styles.brand}>EXAMPILOT AI</Text>
+        <Text style={styles.title}>Welcome back</Text>
+        <Text style={styles.subtitle}>
+          Your smarter semester starts here.
+        </Text>
+
+        <Pressable
+          style={[styles.button, loading && styles.disabled]}
+          disabled={loading}
+          onPress={handleGoogleLogin}
+        >
+          {loading ? (
+            <ActivityIndicator color="#151515" />
+          ) : (
+            <Text style={styles.buttonText}>Continue with Google</Text>
+          )}
+        </Pressable>
+
+        <Text style={styles.message}>{message}</Text>
+        {email ? <Text style={styles.email}>{email}</Text> : null}
+      </View>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    backgroundColor: "#0B1020",
+    padding: 24,
+  },
+  card: {
+    padding: 28,
+    borderRadius: 24,
+    backgroundColor: "#171F34",
+  },
+  brand: {
+    color: "#96A9FF",
+    fontWeight: "800",
+    letterSpacing: 2,
+    marginBottom: 20,
+  },
+  title: {
+    color: "#FFFFFF",
+    fontSize: 30,
+    fontWeight: "800",
+  },
+  subtitle: {
+    color: "#B9C4D7",
+    fontSize: 16,
+    marginTop: 10,
+    marginBottom: 30,
+  },
+  button: {
+    padding: 17,
+    borderRadius: 14,
+    backgroundColor: "#FFFFFF",
+    alignItems: "center",
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#151515",
+  },
+  disabled: {
+    opacity: 0.65,
+  },
+  message: {
+    color: "#B9C4D7",
+    marginTop: 24,
+    textAlign: "center",
+  },
+  email: {
+    color: "#9DE2B1",
+    marginTop: 12,
+    textAlign: "center",
+    fontWeight: "700",
+  },
+});
